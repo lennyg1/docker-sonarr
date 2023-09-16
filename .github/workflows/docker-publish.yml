@@ -33,5 +33,5 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-          push: false
+          push: true
           tags: dysje/sonarr-arm32:latest
