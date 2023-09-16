@@ -4,10 +4,10 @@ name: Docker
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
 # documentation.
-
-on:
-  schedule:
-    - cron: '5 5 * * */2'
+on: workflow_dispatch
+# on:
+#   schedule:
+#     - cron: '5 5 * * */2'
 
 jobs:
   docker:
