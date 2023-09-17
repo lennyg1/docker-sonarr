@@ -22,9 +22,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
+          context: .
           platforms: linux/arm/v7
           push: true
           tags: dysje/sonarr-arm32:latest
