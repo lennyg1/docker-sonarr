@@ -6,7 +6,7 @@ ARG VERSION
 ARG SONARR_VERSION
 ARG DEBIAN_FRONTEND=noninteractive
 
-ENV SONARR_BRANCH="develop"
+ENV SONARR_BRANCH="main"
 ENV XDG_CONFIG_HOME="/config/xdg"
 
 RUN apt update; apt upgrade -y; apt install -y jq curl sqlite3 libicu66 xmlstarlet mediainfo
