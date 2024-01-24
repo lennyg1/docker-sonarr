@@ -11,13 +11,11 @@ ENV XDG_CONFIG_HOME="/config/xdg"
 
 RUN apt update; apt upgrade -y; apt install -y jq curl sqlite3 libicu66 xmlstarlet mediainfo
 RUN mkdir -p /app/sonarr/bin && \
-  if [ -z ${SONARR_VERSION+x} ]; then \
   SONARR_VERSION=$(curl -sX GET http://services.sonarr.tv/v1/releases \
   | jq -r "first(.[] | select(.branch==\"$SONARR_BRANCH\") | .version)"); \
-  fi && \
   curl -o \
   /tmp/sonarr.tar.gz -L \
-  "https://download.sonarr.tv/v4/${SONARR_BRANCH}/${SONARR_VERSION}/Sonarr.${SONARR_BRANCH}.${SONARR_VERSION}.linux-arm.tar.gz" && \
+  "https://github.com/Sonarr/Sonarr/releases/download/v${SONARR_VERSION}/Sonarr.${SONARR_BRANCH}.${SONARR_VERSION}.linux-arm.tar.gz" && \
   tar xzf \
   /tmp/sonarr.tar.gz -C \
   /app/sonarr/bin --strip-components=1 && \
