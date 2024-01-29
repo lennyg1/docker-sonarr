@@ -54,9 +54,7 @@ The architectures supported by this image are:
 
 | Architecture | Available | Tag |
 | :----: | :----: | ---- |
-| x86-64 | ✅ | amd64-\<version tag\> |
-| arm64 | ✅ | arm64v8-\<version tag\> |
-| armhf | ❌ | |
+| armhf | ✅ | latest |
 
 ## Version Tags
 
@@ -64,8 +62,7 @@ This image provides various versions that are available via tags. Please read th
 
 | Tag | Available | Description |
 | :----: | :----: |--- |
-| latest | ✅ | Stable releases from Sonarr (currently v3) |
-| develop | ✅ | Development releases from Sonarr (currently v4) |
+| latest | ✅ | Stable releases from Sonarr (currently v4) |
 ## Application Setup
 
 Access the webui at `<your-ip>:8989`, for more information check out [Sonarr](https://sonarr.tv/).
