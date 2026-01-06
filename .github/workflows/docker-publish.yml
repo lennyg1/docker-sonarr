@@ -6,8 +6,8 @@ name: Build
 # documentation.
 # on: workflow_dispatch
 on:
-  schedule:
-    - cron: '3 3 * * 3'
+  # schedule:
+  #   - cron: '3 3 * * 3'
   workflow_dispatch:
 
 jobs:
@@ -31,4 +31,4 @@ jobs:
           context: .
           platforms: linux/arm/v7
           push: true
-          tags: dysje/sonarr-arm32:latest
+          tags: dysje/sonarrtest-arm32:latest
