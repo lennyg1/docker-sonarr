@@ -6,28 +6,28 @@ set -e
 : "${PGID:=1000}"
 
 # create group if missing
-if ! getent group radarr >/dev/null 2>&1; then
+if ! getent group sonarr >/dev/null 2>&1; then
   if getent group "${PGID}" >/dev/null 2>&1; then
     # group with PGID exists, reuse its name
     EXIST_NAME=$(getent group "${PGID}" | cut -d: -f1)
     groupname="${EXIST_NAME}"
   else
-    addgroup --gid "${PGID}" radarr 2>/dev/null || groupadd -g "${PGID}" radarr
+    addgroup --gid "${PGID}" sonarr 2>/dev/null || groupadd -g "${PGID}" sonarr
   fi
 fi
 
 # create user if missing
-if ! id -u radarr >/dev/null 2>&1; then
-  adduser --disabled-password --gecos "" --uid "${PUID}" --gid "${PGID}" --home /config radarr 2>/dev/null || \
-    useradd -u "${PUID}" -g "${PGID}" -M -s /usr/sbin/nologin -d /config radarr
+if ! id -u sonarr >/dev/null 2>&1; then
+  adduser --disabled-password --gecos "" --uid "${PUID}" --gid "${PGID}" --home /config sonarr 2>/dev/null || \
+    useradd -u "${PUID}" -g "${PGID}" -M -s /usr/sbin/nologin -d /config sonarr
 fi
 
 # ensure permissions
-chown -R "${PUID}:${PGID}" /config /app/radarr || true
+chown -R "${PUID}:${PGID}" /config /app/sonarr || true
 
-# run as radarr using gosu if present, fallback to su
+# run as sonarr using gosu if present, fallback to su
 if command -v gosu >/dev/null 2>&1; then
-  exec gosu radarr "$@"
+  exec gosu sonarr "$@"
 else
-  exec su -s /bin/sh radarr -c "$*"
+  exec su -s /bin/sh sonarr -c "$*"
 fi
