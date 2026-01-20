@@ -1,2 +1,1 @@
-docker buildx prune
-docker buildx build . --platform linux/arm/v7 --tag dysje/sonarr-arm32 --push
+docker buildx build . --platform linux/arm/v7 --tag dysje/sonarrtest-arm32 --push

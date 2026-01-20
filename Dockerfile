@@ -1,32 +1,38 @@
-# syntax=docker/dockerfile:1
+FROM ubuntu:22.04
 
-FROM ghcr.io/linuxserver/baseimage-ubuntu:arm32v7-focal-version-127ce7ef
-
-ARG VERSION
-ARG SONARR_VERSION
+ARG SONARR_BRANCH="develop"
 ARG DEBIAN_FRONTEND=noninteractive
 
-ENV SONARR_BRANCH="main"
-ENV XDG_CONFIG_HOME="/config/xdg"
+ENV SONARR_BRANCH="${SONARR_BRANCH}"
+ENV XDG_CONFIG_HOME="/app/config"
+ENV PUID=1001
+ENV PGID=1001
+ENV TZ=Europe/Amsterdam
 
-RUN apt update; apt upgrade -y; apt install -y jq curl sqlite3 libicu66 xmlstarlet mediainfo
-RUN mkdir -p /app/sonarr/bin && \
+RUN apt-get update && apt-get upgrade -y && \
+  apt-get install -y ca-certificates tzdata curl jq sqlite3 xmlstarlet mediainfo gnupg2 apt-utils adduser coreutils && \
+  # pick the newest libicu package available on this platform
+  LIBICU="$(apt-cache pkgnames | grep -E '^libicu[0-9]+' | sort -V | tail -n1)" && \
+  if [ -n "$LIBICU" ]; then apt-get install -y "$LIBICU"; fi && \
+  # install gosu for safe user switch at runtime
+  curl -fsSL -o /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.19/gosu-armhf" && \
+  chmod +x /usr/local/bin/gosu && gosu nobody true || true && \
+  apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
+
+RUN mkdir -p /app/sonarr/bin /app/config && \
   SONARR_VERSION=$(curl -sX GET http://services.sonarr.tv/v1/releases \
   | jq -r "first(.[] | select(.branch==\"$SONARR_BRANCH\") | .version)"); \
-  curl -o \
-  /tmp/sonarr.tar.gz -L \
-  "https://github.com/Sonarr/Sonarr/releases/download/v${SONARR_VERSION}/Sonarr.${SONARR_BRANCH}.${SONARR_VERSION}.linux-arm.tar.gz" && \
-  tar xzf \
-  /tmp/sonarr.tar.gz -C \
-  /app/sonarr/bin --strip-components=1 && \
+  curl -o /tmp/sonarr.tar.gz -L "https://github.com/Sonarr/Sonarr/releases/download/v${SONARR_VERSION}/Sonarr.${SONARR_BRANCH}.${SONARR_VERSION}.linux-arm.tar.gz" && \
+  tar xzf /tmp/sonarr.tar.gz -C /app/sonarr/bin --strip-components=1 && \
   echo -e "UpdateMethod=docker\nBranch=${SONARR_BRANCH}" > /app/sonarr/package_info && \
-  apt-get clean && \
-  rm -rf \
-    /app/sonarr/bin/Sonarr.Update \
-    /tmp/* \
-    /var/lib/apt/lists/* \
-    /var/tmp/*
+  rm -rf /tmp/* /app/sonarr/bin/Sonarr.Update && \
+  ln -s /app/config/Sonarr /config
 
-COPY root/ /
+COPY root/ /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 EXPOSE 8989
 VOLUME /config
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["/app/sonarr/bin/Sonarr", "-nobrowser"]
