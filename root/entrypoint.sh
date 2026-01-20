@@ -18,12 +18,12 @@ fi
 
 # create user if missing
 if ! id -u sonarr >/dev/null 2>&1; then
-  adduser --disabled-password --gecos "" --uid "${PUID}" --gid "${PGID}" --home /config sonarr 2>/dev/null || \
-    useradd -u "${PUID}" -g "${PGID}" -M -s /usr/sbin/nologin -d /config sonarr
+  adduser --disabled-password --gecos "" --uid "${PUID}" --gid "${PGID}" --home /app/config sonarr 2>/dev/null || \
+    useradd -u "${PUID}" -g "${PGID}" -M -s /usr/sbin/nologin -d /app/config sonarr
 fi
 
 # ensure permissions
-chown -R "${PUID}:${PGID}" /config /app/sonarr || true
+chown -R "${PUID}:${PGID}" /app/config /app/sonarr || true
 
 # run as sonarr using gosu if present, fallback to su
 if command -v gosu >/dev/null 2>&1; then
