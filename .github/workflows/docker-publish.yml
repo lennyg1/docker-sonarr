@@ -31,4 +31,4 @@ jobs:
           context: .
           platforms: linux/arm/v7
           push: true
-          tags: dysje/sonarrtest-arm32:latest
+          tags: dysje/sonarr-arm32:latest
